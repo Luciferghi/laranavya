@@ -115,10 +115,11 @@
                                     </div>
                                                                                 
                                 </div>
-                                @if(!session()->has('coupon'))
+                             @if(!session()->has('coupon'))
                 
-                <form action="{{ route('coupon.store')}}" method="POST" style="display: inline;">
+                                <form action="{{ route('coupon.store')}}" method="POST" style="display: inline;">
                                 {{@csrf_field()}}
+
                                 <div class="col-md-6 col-xs-12">
                                     <strong><br>Coupon Code:</strong>
                                     <input type="text" name="coupon_code" class="form-control" required />
@@ -126,7 +127,7 @@
                                     <button type="submit" class="flex-c-m sizefull bg1 bo-rad-23 hov1 s-text1 trans-0-4">Apply Coupon</button>
                                 </div>
                                 </form>
-                @endif
+                            @endif
                                 </div>
 
                         </div>
@@ -145,8 +146,8 @@
                                     <h4>Shipping Address</h4>
                                 </div>
                             </div>
-                            <form class="form-horizontal" method="POST" action="{{ route('confirmation.index') }}">
-                            {{ csrf_field() }}
+                            <form class="form-horizontal" action="{{ route('checkout.store') }}" method="POST" >
+                            {{ @csrf_field() }}
                             <div class="form-group">
                                 <div class="col-md-12"><strong>Country:</strong></div>
                                 <div class="col-md-12">
@@ -154,16 +155,12 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-md-6 col-xs-12">
-                                    <strong>First Name:</strong>
-                                    <input type="text" name="first_name" class="form-control" required />
-                                </div>
-                                <div class="span1"></div>
-                                <div class="col-md-6 col-xs-12">
-                                    <strong>Last Name:</strong>
-                                    <input type="text" name="last_name" class="form-control" required />
+                                <div class="col-md-12"><strong>Name:</strong></div>
+                                <div class="col-md-12">
+                                    <input type="text" name="name" class="form-control" required />
                                 </div>
                             </div>
+                            
                             <div class="form-group">
                                 <div class="col-md-12"><strong>Address:</strong></div>
                                 <div class="col-md-12">

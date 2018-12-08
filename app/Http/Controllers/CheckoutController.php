@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\CheckoutRequest;
+use App\Order;
+use App\OrderProduct;
 use Cart;
+use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
 {
@@ -35,8 +37,40 @@ class CheckoutController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CheckoutRequest $request)
+    public function store(Request $request)
     {
+        ;
+
+        $order = Order::create([
+            'user_id' => auth()->user()->id,
+            'billing_country' => $request->country,
+            'billing_name' => $request->name,
+            'billing_address' => $request->address,
+            'billing_city' => $request->city,
+            'billing_phone' => $request->phone_number,
+            
+            
+            'billing_email' => $request->email_address,
+            'billing_discount' => $this->getNumbers()->get('discount'),
+            'billing_discount_code' => $this->getNumbers()->get('code'),
+            'billing_subtotal' => $this->getNumbers()->get('newSubTotal'),
+            'billing_total' => $this->getNumbers()->get('newSubTotal'),
+        ]);
+        
+        foreach (Cart::getContent() as $item) {
+            
+            OrderProduct::create([
+
+                'order_id' => $order->id,
+                'product_id' => $item->attributes->id,
+                'quantity' => $item->quantity,
+
+
+
+            ]);
+        }
+
+
         Cart::clear();
         session()->forget('coupon');
         return redirect()->route('confirmation.index')->with('success_message','Success Message');
@@ -92,11 +126,12 @@ class CheckoutController extends Controller
         $subTotal = Cart::getSubtotal();
         $discount = session()->get('coupon')['discount'] ?? 0;
         $newSubTotal = $subTotal - $discount;
-
+        $code = session()->get('coupon')['name'] ?? null;
         return collect([
             'subTotal' => $subTotal,
             'discount' => $discount,
             'newSubTotal' => $newSubTotal,
+            'code' => $code,
         ]);
     }
 }
