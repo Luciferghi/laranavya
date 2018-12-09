@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckoutRequest;
+use App\Mail\OrderPlaced;
 use App\Order;
 use App\OrderProduct;
 use Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -39,8 +41,18 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {
-        ;
+        
+        $order = $this->addToOrdersTable($request,null);
+        
+        Mail::send(new OrderPlaced($order));
 
+        Cart::clear();
+        session()->forget('coupon');
+        return redirect()->route('confirmation.index')->with('success_message','Success Message');
+    }
+
+    public function addToOrdersTable($request)
+    {
         $order = Order::create([
             'user_id' => auth()->user()->id,
             'billing_country' => $request->country,
@@ -69,12 +81,11 @@ class CheckoutController extends Controller
 
             ]);
         }
-
-
-        Cart::clear();
-        session()->forget('coupon');
-        return redirect()->route('confirmation.index')->with('success_message','Success Message');
+        return $order;
+        
     }
+
+
 
     /**
      * Display the specified resource.

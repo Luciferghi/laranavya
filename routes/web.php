@@ -34,6 +34,8 @@ Route::get('/empty', 'CartController@clear')->name('cart.clear');
 Route::get('/checkout','CheckoutController@index')->name('checkout.index')->middleware('auth');
 Route::post('/checkout','CheckoutController@store')->name('checkout.store');
 
+Route::get('/search','ShopController@search')->name('search');
+
 
 Route::get('/thankyou','ConfirmationController@index')->name('confirmation.index');
 
